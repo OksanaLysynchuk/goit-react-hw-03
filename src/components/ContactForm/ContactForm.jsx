@@ -1,15 +1,14 @@
-import { useId } from "react";
+import { useEffect, useState } from "react";
+import { nanoid } from "nanoid";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import CSS from "./ContactForm.module.css";
 import * as Yup from "yup";
-import { useEffect } from "react";
 
 const FormSchema = Yup.object().shape({
   name: Yup.string()
     .required("Name is required")
     .min(3, "Name must be at least 3 characters")
-    .max(50, "Name cannot exceed 50 characters")
-    .required("Required"),
+    .max(50, "Name cannot exceed 50 characters"),
   number: Yup.string()
     .typeError("That doesn't look like a phone number")
     .matches(/^\d{3}-\d{2}-\d{2}$/, "Invalid phone number format")
@@ -19,9 +18,15 @@ const FormSchema = Yup.object().shape({
 });
 
 export default function ContactForm({ contacts, onAdd }) {
-  const id = useId();
-  const nameFieldId = useId();
-  const numberFieldId = useId();
+  const [nameFieldId, setNameFieldId] = useState("");
+  const [numberFieldId, setNumberFieldId] = useState("");
+  const [id, setId] = useState("");
+
+  useEffect(() => {
+    setId(nanoid());
+    setNameFieldId(nanoid());
+    setNumberFieldId(nanoid());
+  }, [contacts]);
 
   useEffect(() => {
     localStorage.setItem("contacts", JSON.stringify(contacts));
