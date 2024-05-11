@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useId } from "react";
 import { nanoid } from "nanoid";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import CSS from "./ContactForm.module.css";
@@ -17,24 +17,13 @@ const FormSchema = Yup.object().shape({
     .max(50, "Number cannot exceed 50 characters"),
 });
 
-export default function ContactForm({ contacts, onAdd }) {
-  const [nameFieldId, setNameFieldId] = useState("");
-  const [numberFieldId, setNumberFieldId] = useState("");
-  const [id, setId] = useState("");
-
-  useEffect(() => {
-    setId(nanoid());
-    setNameFieldId(nanoid());
-    setNumberFieldId(nanoid());
-  }, [contacts]);
-
-  useEffect(() => {
-    localStorage.setItem("contacts", JSON.stringify(contacts));
-  }, [contacts]);
+export default function ContactForm({ onAdd }) {
+  const nameFieldId = useId();
+  const numberFieldId = useId();
 
   const handleSubmit = (values, { resetForm }) => {
     onAdd({
-      id: id,
+      id: nanoid(),
       name: values.name,
       number: values.number,
     });
